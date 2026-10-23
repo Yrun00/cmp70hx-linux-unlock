@@ -18,11 +18,18 @@ Version 0.2.4 added signal/failure receipts, persistent MME disable policy,
 privileged installer-code staging and library metadata preservation. Module/config
 installation uses a private verified snapshot; diagnostic state is private, and
 persistence-mode restoration is reported explicitly. Version 0.2.5 corrects CI's
-interpreter, disable/restore documentation and source license headers. The complete
+interpreter, disable/restore documentation and source license headers. Version 0.2.6
+also rejects out-of-range GPU slots in the Booter path before touching per-GPU state;
+both GPU-slot helpers are compiled and exercised by the C regression tests. The complete
 hardware build/boot/recovery lifecycle of the current release
 has not yet been run. OpenRC, other distributions, single-card systems, different
 PCI addresses, multiple PCIe/GFX targets, Gen2 x1/x2, Secure Boot, suspend/resume
 and VM passthrough have no completed validation record in this release.
+
+Early-boot ordering after udev-trigger does not establish that every device event
+has completed. Repeated physical cold boots and device-creation timing remain
+unvalidated. The kit currently relies on the installed NVIDIA userspace/device-node
+setup for `nvidia-smi`; it does not add a global udev wait or retry hardware stages.
 
 This archive contains no reproducible performance benchmark suite or raw
 performance dataset. Historical lab speed figures are therefore omitted. Register

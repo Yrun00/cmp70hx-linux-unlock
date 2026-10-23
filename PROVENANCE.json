@@ -29,7 +29,7 @@
     },
     {
       "file": "overlay/src/nvidia/src/kernel/gpu/gsp/arch/turing/kernel_gsp_booter_tu102.c",
-      "sha256": "03747a1840ef5d30e3003dac2f99cb3cb1c880f6f250a0ac1a3b58e70f6494ba",
+      "sha256": "45ac01a3cb5973dfda1571bad661567adba60544ba4dd90a988ec41e68f2ef5e",
       "patch_origins": [
         "pearlfortune-rejoin14",
         "jdowning100-rejoin16"

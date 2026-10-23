@@ -117,6 +117,41 @@ class Persistence(unittest.TestCase):
 
 
 class Packaging(unittest.TestCase):
+    def test_rebuild_ignores_source_timestamps_and_permissions(self):
+        import zipfile
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'source'
+            for path in package.source_files():
+                target = source / path.relative_to(package.ROOT)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(path.read_bytes())
+            with patch.object(package, 'ROOT', source), contextlib.redirect_stdout(io.StringIO()):
+                with patch.object(sys, 'argv', ['package.py', str(root / 'first')]):
+                    package.main()
+                for path in package.source_files():
+                    os.utime(path, (1234567890, 1234567890))
+                    path.chmod(0o600)
+                with patch.object(sys, 'argv', ['package.py', str(root / 'second')]):
+                    package.main()
+            for path in (root / 'first').iterdir():
+                self.assertEqual(path.read_bytes(), (root / 'second' / path.name).read_bytes())
+            with zipfile.ZipFile(root / 'first' / (package.NAME + '.zip')) as archive:
+                for path in source.rglob('*'):
+                    if path.is_file():
+                        self.assertEqual(path.read_bytes(), archive.read(package.NAME + '/' + path.relative_to(source).as_posix()))
+
+    def test_crlf_source_is_refused_before_creating_artifacts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'source.txt'
+            source.write_bytes(b'line\r\n')
+            with patch.object(package, 'ROOT', root), patch.object(package, 'source_files', return_value=[source]), \
+                    patch.object(sys, 'argv', ['package.py', str(root / 'dist')]):
+                with self.assertRaisesRegex(SystemExit, 'LF line endings'):
+                    package.main()
+            self.assertEqual(list((root / 'dist').iterdir()), [])
+
     def test_combined_source_license_tags_match_provenance(self):
         import hashlib
         import re
@@ -162,7 +197,20 @@ class Packaging(unittest.TestCase):
 
     @unittest.skipUnless(sys.platform=='linux','C harness runs on Linux')
     def test_actual_overlay_slot_helper_rejects_out_of_range_without_aliasing_gpu_zero(self):
-        text=(kit.ROOT/'overlay/src/nvidia/src/kernel/gpu/gsp/kernel_gsp.c').read_text()
+        self.check_slot_helper('overlay/src/nvidia/src/kernel/gpu/gsp/kernel_gsp.c')
+
+    @unittest.skipUnless(sys.platform=='linux','C harness runs on Linux')
+    def test_booter_slot_helper_rejects_out_of_range_before_state_access(self):
+        relative='overlay/src/nvidia/src/kernel/gpu/gsp/arch/turing/kernel_gsp_booter_tu102.c'
+        self.check_slot_helper(relative)
+        text=(kit.ROOT/relative).read_text()
+        guard=text.index('_kgspCmp90Rejoin14GpuSlot(pGpu, &cmp90PcGpuSlot)')
+        first_access=text.index('s_cmp90PcExactTimingAttemptedByGpu[cmp90PcGpuSlot]')
+        self.assertLess(guard,first_access)
+        self.assertNotIn('/var/lib/cmpunlocker-rs/',text)
+
+    def check_slot_helper(self, relative):
+        text=(kit.ROOT/relative).read_text()
         start=text.index('static NV_STATUS\n_kgspCmp90Rejoin14GpuSlot')
         end=text.index('\n}\n',start)+3
         helper=text[start:end]

@@ -53,7 +53,7 @@ Review the generated `host.patch` when changing the target policy.
 ## Packaging
 
 ```bash
-python3 package.py ../dist-0.2.5
+python3 package.py ../dist-0.2.6
 ```
 
 Use a new output directory. The command creates ZIP, TAR.GZ, PYZ and
@@ -61,6 +61,18 @@ Use a new output directory. The command creates ZIP, TAR.GZ, PYZ and
 An exact file allowlist includes sources, public documentation and license texts.
 Vendor binaries, host configurations and build outputs are excluded. Additional
 files placed under `docs/`, `overlay/` or `.github/` are not implicitly packaged.
+
+Source files use LF line endings, enforced by `.gitattributes`; packaging refuses
+CRLF sources. Archive timestamps, ownership and permissions are fixed. Rebuilding
+the same sources with the same Python/zlib versions produces byte-identical
+artifacts. GitHub's automatically generated source archives have their own
+container metadata; compare their extracted files using the internal manifest.
+
+For publication, commit the internal `SHA256SUMS` from the source ZIP alongside
+the exact packaged sources, then rebuild from that commit into a new directory.
+CI checks this manifest against the checkout. Upload the three rebuilt artifacts
+and their external `SHA256SUMS`. After uploading, download them and check both
+the external manifest and byte equality of the extracted sources against the tag.
 
 ## Installation trust boundary
 

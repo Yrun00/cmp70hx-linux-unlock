@@ -30,7 +30,14 @@
 
 ### Как попробовать
 
-**Версия 0.2.5 — экспериментальная.** Это вмешательство в драйвер ядра и системные
+Скачайте установщик и `SHA256SUMS` из одного релиза в одну папку. Перед запуском
+проверьте файл на Linux командой ниже; напротив установщика должно появиться `OK`:
+
+```bash
+sha256sum --check --ignore-missing SHA256SUMS
+```
+
+**Версия 0.2.6 — экспериментальная.** Это вмешательство в драйвер ядра и системные
 библиотеки. Возможны зависание, потеря графического входа и необходимость
 восстановления из TTY/SSH. Сначала сохраните работу и прочитайте
 [инструкцию восстановления](docs/RECOVERY.md).
@@ -39,11 +46,11 @@
 совместимость вашей системы, выбранные карты и порядок восстановления. Если
 хотите пройти установку самостоятельно — для этого есть интерактивный мастер.
 
-1. Откройте **Releases** этого репозитория и скачайте `cmp70hx-linux-0.2.5.pyz`.
+1. Откройте **Releases** этого репозитория и скачайте `cmp70hx-linux-0.2.6.pyz`.
 2. На Linux-компьютере с CMP70HX откройте терминал в папке скачивания:
 
    ```bash
-   python3 cmp70hx-linux-0.2.5.pyz
+   python3 cmp70hx-linux-0.2.6.pyz
    ```
 
 3. Запускайте от обычного пользователя. Мастер предложит выбрать карты,
@@ -98,7 +105,14 @@ verification, image correctness and measured performance are separate checks.
 
 ### Try it
 
-**Version 0.2.5 is experimental.** It modifies the kernel driver and system
+Download the installer and `SHA256SUMS` from the same release into one directory.
+Before running the installer, verify it on Linux; its result must be `OK`:
+
+```bash
+sha256sum --check --ignore-missing SHA256SUMS
+```
+
+**Version 0.2.6 is experimental.** It modifies the kernel driver and system
 libraries. Hangs, loss of graphical login, and TTY/SSH recovery may be necessary.
 Save your work and read [Recovery](docs/RECOVERY.md) first.
 
@@ -106,11 +120,11 @@ I recommend asking your AI agent to review the sources, your machine's
 compatibility, selected cards, and recovery procedure before installation.
 For those comfortable installing it themselves, an interactive wizard is included.
 
-1. Open this repository's **Releases** and download `cmp70hx-linux-0.2.5.pyz`.
+1. Open this repository's **Releases** and download `cmp70hx-linux-0.2.6.pyz`.
 2. On the Linux computer containing the cards, run:
 
    ```bash
-   python3 cmp70hx-linux-0.2.5.pyz
+   python3 cmp70hx-linux-0.2.6.pyz
    ```
 
 3. Run as your ordinary user. The wizard selects cards, builds with live progress,

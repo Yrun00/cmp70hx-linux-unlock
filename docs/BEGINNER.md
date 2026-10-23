@@ -10,7 +10,7 @@ Keep your downloaded PYZ or extracted kit for recovery.
 For the single downloaded file:
 
 ```bash
-python3 cmp70hx-linux-0.2.5.pyz
+python3 cmp70hx-linux-0.2.6.pyz
 ```
 
 For extracted sources, open the directory containing `cmp70hx.py` and run:
@@ -194,7 +194,7 @@ applications closed; see [Recovery](RECOVERY.md#mme-only-restore).
 sudo python3 cmp70hx.py uninstall
 ```
 
-For PYZ, substitute `cmp70hx-linux-0.2.5.pyz` for `cmp70hx.py`. Uninstall requires
+For PYZ, substitute `cmp70hx-linux-0.2.6.pyz` for `cmp70hx.py`. Uninstall requires
 the modified module to be absent, removes the boot job, restores known original
 libraries and retains backups. It does not delete your applications. Complete
 recovery and kernel updates are covered in [recovery](RECOVERY.md).
@@ -202,7 +202,7 @@ recovery and kernel updates are covered in [recovery](RECOVERY.md).
 ## Updating an earlier installation
 
 Remove the previous installation using the recovery procedure, then start the
-new wizard. Version 0.2.5 updates license headers in three driver templates without
-changing executable driver code. Their source hashes changed, so the exact-provenance
-check requires a fresh build when upgrading from an earlier version. A matching
-0.2.5 build can be resumed while its running kernel still matches.
+new wizard. Version 0.2.6 changes Booter GPU-slot bounds handling. Its source hash
+changed, so the exact-provenance check requires a fresh build when upgrading from
+an earlier version. A matching 0.2.6 build can be resumed while its running kernel
+still matches.

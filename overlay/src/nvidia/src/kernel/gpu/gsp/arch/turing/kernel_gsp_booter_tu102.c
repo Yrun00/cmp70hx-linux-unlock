@@ -52,7 +52,6 @@
 #define CMP90_PC_EXACT_SS1                       0x00823820U
 #define CMP90_PC_EXACT_SS0_FULL                  0x88888888U
 #define CMP90_PC_EXACT_SS1_FULL                  0x00000008U
-#define CMP90_REJOIN16_WRITE_SPEC_PATH           "/var/lib/cmpunlocker-rs/rejoin16-next-write.bin"
 
 NV_STATUS kgspCmp90RestoreStockSignatureForBooter(OBJGPU *pGpu,
                                                   KernelGsp *pKernelGsp);
@@ -71,14 +70,18 @@ s_cmp90PcExactTimingAttemptedByGpu[CMP90_PC_EXACT_MAX_GPU_INSTANCES];
 static NvBool
 s_cmp90PcStockRetryArmedByGpu[CMP90_PC_EXACT_MAX_GPU_INSTANCES];
 
-static NvU32
+static NV_STATUS
 _kgspCmp90Rejoin14GpuSlot
 (
-    OBJGPU *pGpu
+    OBJGPU *pGpu,
+    NvU32 *pSlot
 )
 {
-    return (pGpu->gpuInstance < CMP90_PC_EXACT_MAX_GPU_INSTANCES) ?
-        pGpu->gpuInstance : 0U;
+    NV_CHECK_OR_RETURN(LEVEL_ERROR,
+        pGpu->gpuInstance < CMP90_PC_EXACT_MAX_GPU_INSTANCES,
+        NV_ERR_INVALID_ARGUMENT);
+    *pSlot = pGpu->gpuInstance;
+    return NV_OK;
 }
 
 static NvBool
@@ -194,10 +197,15 @@ kgspExecuteBooterLoad_TU102
     NvBool bCmp90PcStockRetry = NV_FALSE;
     NvBool bCmp90PcCanary =
         cmp70PortEnabled(pGpu);
-    NvU32 cmp90PcGpuSlot = bCmp90PcCanary ?
-        _kgspCmp90Rejoin14GpuSlot(pGpu) : 0U;
+    NvU32 cmp90PcGpuSlot = 0U;
 
     KernelSec2 *pKernelSec2 = GPU_GET_KERNEL_SEC2(pGpu);
+
+    if (bCmp90PcCanary)
+    {
+        NV_ASSERT_OK_OR_RETURN(
+            _kgspCmp90Rejoin14GpuSlot(pGpu, &cmp90PcGpuSlot));
+    }
 
     NV_ASSERT_OR_RETURN(pKernelGsp->pBooterLoadUcode != NULL, NV_ERR_INVALID_STATE);
 
@@ -301,10 +309,10 @@ kgspExecuteBooterLoad_TU102
              * re-fires only for the FIRST crafted execution that follows an
              * FWSEC (FRTS) run in a given boot cycle; later re-executions
              * never fire. A userspace driver therefore iterates the
-             * register table across module reloads, passing one (addr,
-             * value) pair per load in
-             * /var/lib/cmpunlocker-rs/rejoin16-next-write.bin as 8 bytes
-             * little-endian: addr (4) then value (4). Non-fatal throughout.
+             * register table across module reloads. This adaptation selects
+             * the (address, value) pair from the generated policy and module
+             * write-index parameter via cmp70PortGetWrite(), encoded as
+             * 8 little-endian bytes: address (4), then value (4).
              */
             {
                 NvU8 wrSpec[8];
@@ -315,9 +323,9 @@ kgspExecuteBooterLoad_TU102
                 if (specStatus != NV_OK)
                 {
                     NV_PRINTF(LEVEL_ERROR,
-                        "CMP70_PORT_STOCKFLOW_REJOIN16: no write spec at %s "
+                        "CMP70_PORT_STOCKFLOW_REJOIN16: no write selected by policy "
                         "(0x%x); no extra write this load\n",
-                        CMP90_REJOIN16_WRITE_SPEC_PATH, specStatus);
+                        specStatus);
                 }
                 else
                 {
