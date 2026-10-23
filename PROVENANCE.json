@@ -1,0 +1,77 @@
+{
+  "driver": "610.43.03",
+  "source_archive_sha256": "7e118923c7a23edc36114d63273a46e3e04e9af98695a42203e7ac2dfe9fc1dc",
+  "normalization": "LF",
+  "files": [
+    {
+      "file": "overlay/kernel-open/nvidia/nv.c",
+      "sha256": "d229809c7f58b7fd85d03ab7509110964dc350383928f9ffef0ca96900235708",
+      "patch_origins": [
+        "pearlfortune-rejoin14",
+        "pearlfortune-rejoin15",
+        "jdowning100-rejoin16"
+      ],
+      "license": "GPL-2.0-only"
+    },
+    {
+      "file": "overlay/src/nvidia/inc/kernel/gpu/gsp/cmp70_port.h",
+      "sha256": "609dac790026cd1d52367aeaf7c4d6925f63930ca6227e46cd2ba691160ddcf2",
+      "patch_origins": [],
+      "license": "MIT"
+    },
+    {
+      "file": "overlay/src/nvidia/src/kernel/gpu/gsp/arch/ampere/kernel_gsp_falcon_ga102.c",
+      "sha256": "40feebc09417d231eff130b4a9afd0db00c751fccc76d73caa78d1b5a4a73328",
+      "patch_origins": [
+        "pearlfortune-rejoin14"
+      ],
+      "license": "MIT"
+    },
+    {
+      "file": "overlay/src/nvidia/src/kernel/gpu/gsp/arch/turing/kernel_gsp_booter_tu102.c",
+      "sha256": "03747a1840ef5d30e3003dac2f99cb3cb1c880f6f250a0ac1a3b58e70f6494ba",
+      "patch_origins": [
+        "pearlfortune-rejoin14",
+        "jdowning100-rejoin16"
+      ],
+      "license": "GPL-2.0-only"
+    },
+    {
+      "file": "overlay/src/nvidia/src/kernel/gpu/gsp/arch/turing/kernel_gsp_frts_tu102.c",
+      "sha256": "67513c9f134c01397f4d382f321e75ba25b3a0c0de83565191008e1be01d37ed",
+      "patch_origins": [
+        "pearlfortune-rejoin14"
+      ],
+      "license": "MIT"
+    },
+    {
+      "file": "overlay/src/nvidia/src/kernel/gpu/gsp/kernel_gsp.c",
+      "sha256": "d513eeb836dc00857b0e2930270f071f9afbb35e5448cce5fae9f38aeb17c823",
+      "patch_origins": [
+        "pearlfortune-rejoin14",
+        "jdowning100-rejoin16"
+      ],
+      "license": "GPL-2.0-only"
+    }
+  ],
+  "upstream_patches": [
+    {
+      "id": "pearlfortune-rejoin14",
+      "sha256": "c51805dc332c3b6be2e6dd34964a47ce6b1ea0ce73017e0351c216d319094bb1",
+      "license": "MIT",
+      "source": "https://github.com/pearlfortune/cmpunlocker/releases/tag/v0.1.28"
+    },
+    {
+      "id": "pearlfortune-rejoin15",
+      "sha256": "3dd3883479d10a822d54292db87a1552f15d6b144b8c42bfc88a519674836cb4",
+      "license": "MIT",
+      "source": "https://github.com/pearlfortune/cmpunlocker/releases/tag/v0.1.28"
+    },
+    {
+      "id": "jdowning100-rejoin16",
+      "sha256": "2fd97d6b04938017e85181b4900f78daf4e2c560a4ccd86e917aa7ddff05559e",
+      "license": "GPL-2.0-only",
+      "source": "https://github.com/jdowning100/cmpunlocker/blob/2cdc63cf1ab80d8128cf9e77216e3f3c132b212f/90hx/0016-6104303-cmp90hx-stockflow-rejoin16-pcie-jtag-plm.patch"
+    }
+  ]
+}

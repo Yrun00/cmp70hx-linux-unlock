@@ -1,0 +1,14 @@
+name: CPU-only validation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      # Boot integration requires the persistent system interpreter, not toolcache Python.
+      - run: /usr/bin/python3 -c "import sys; assert sys.version_info >= (3, 12); print(sys.executable, sys.version)"
+      - run: /usr/bin/python3 -m unittest discover -v
+      - run: /usr/bin/python3 package.py /tmp/cmp70hx-release
+      - run: /usr/bin/python3 /tmp/cmp70hx-release/cmp70hx-linux-0.2.5.pyz --help
